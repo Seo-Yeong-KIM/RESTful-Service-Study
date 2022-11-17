@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class UserController {
 
     // 유저 정보 저장
     @PostMapping("/users")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
+    public ResponseEntity<User> saveUser(@Valid @RequestBody User user) { // 유효성 체크 추가
 
         // 저장메서드 실행(++id값 저장됨)
         User savedUser = service.save(user);

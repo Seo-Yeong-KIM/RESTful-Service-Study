@@ -1,8 +1,10 @@
 package com.clrobur.restful.exception;
 
 import jdk.jfr.Category;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,5 +35,15 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         ExceptionResponse exRes = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
 
         return new ResponseEntity(exRes, HttpStatus.NOT_FOUND);
+    }
+
+
+    // 오버라이딩
+    // 유효성 체크에서 오류가 났을 경우
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        ExceptionResponse exRes = new ExceptionResponse(new Date(), ex.getMessage(), ex.getBindingResult().toString());
+        return new ResponseEntity(exRes, HttpStatus.BAD_REQUEST);
     }
 }
