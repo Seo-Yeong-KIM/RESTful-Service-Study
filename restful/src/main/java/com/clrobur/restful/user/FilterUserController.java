@@ -41,7 +41,10 @@ public class FilterUserController {
     }
 
     // 개별 유저 조회(필터 추가)
-    @GetMapping("/v1/users/{id}")
+//    @GetMapping("/v1/users/{id}") // 버전을 url에 명시
+//    @GetMapping(value="/users/{id}", params="version=1") // 버전을 param 값으로 명시 ( ?version=1 이 url로 받아옴 )
+//    @GetMapping(value="/users/{id}", headers="version=1") // 버전을 header에 명시
+    @GetMapping(value="/users/{id}", produces="application/vnd.company.appv1+json") // MIME 타입으로 버전 명시 (header에 값 넣으면 됨)
     public MappingJacksonValue oneUser_v1(@PathVariable int id) {
 
         // 유저 정보 받아옴
@@ -64,7 +67,10 @@ public class FilterUserController {
     }
 
     // 개별 유저 조회 ver.2
-    @GetMapping("/v2/users/{id}")
+//    @GetMapping("/v2/users/{id}")
+//    @GetMapping(value="/users/{id}", params="version=2")
+//    @GetMapping(value="/users/{id}", headers="version=2")
+    @GetMapping(value="/users/{id}", produces="application/vnd.company.appv2+json") // Media 타입으로 버전 명시
     public MappingJacksonValue oneUser_v2(@PathVariable int id) {
 
         User user = service.findOne(id);
