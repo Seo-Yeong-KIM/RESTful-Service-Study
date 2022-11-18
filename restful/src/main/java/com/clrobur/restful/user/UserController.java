@@ -1,6 +1,8 @@
 package com.clrobur.restful.user;
 
 import com.clrobur.restful.exception.UserNotFoundException;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -8,6 +10,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+// HATEOAS의 메서드 길이를 줄이기 위해 static으로 가져옴
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserController {
@@ -28,7 +34,7 @@ public class UserController {
 
     // 개별 유저 조회
     @GetMapping("/users/{id}")
-    public User oneUser(@PathVariable int id) {
+    public EntityModel<User> oneUser(@PathVariable int id) {
         User user = service.findOne(id);
 
         // 조회한 id가 없을 경우
@@ -36,7 +42,12 @@ public class UserController {
             throw new UserNotFoundException(String.format("ID[%s] not found", id)); // Custom 예외 객체 생성
         }
 
-        return user; // 값이 null이더라도 응답코드는 200을 받음
+        // HATEOAS 추가
+        EntityModel<User> resource = new EntityModel<>(user);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).allUsers()); // static으로 import해서 사용하는 메서드 길이 줄임
+        resource.add(linkTo.withRel("all-users"));
+
+        return resource; // 값이 null이더라도 응답코드는 200을 받음
     }
 
     // 유저 정보 저장
