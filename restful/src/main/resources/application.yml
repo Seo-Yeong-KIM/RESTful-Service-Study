@@ -1,8 +1,13 @@
-## ?? ?? ??
+## 서버 포트 변경
 server:
   port: 8088
 
-## LOG ?? ?? ??
+## LOG 출력 레벨 설정
 #logging:
 #  level:
 #    org.springframework: DEBUG
+
+## 다국어 설정
+spring:
+  messages:
+    basename: messages
