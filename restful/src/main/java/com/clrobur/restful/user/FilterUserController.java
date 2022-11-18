@@ -4,6 +4,7 @@ import com.clrobur.restful.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +41,8 @@ public class FilterUserController {
     }
 
     // 개별 유저 조회(필터 추가)
-    @GetMapping("/users/{id}")
-    public MappingJacksonValue oneUser(@PathVariable int id) {
+    @GetMapping("/v1/users/{id}")
+    public MappingJacksonValue oneUser_v1(@PathVariable int id) {
 
         // 유저 정보 받아옴
         User user = service.findOne(id);
@@ -57,6 +58,33 @@ public class FilterUserController {
 
         // 받아온 유저 정보를 mapping하고 필터 추가함
         MappingJacksonValue mapping = new MappingJacksonValue(user);
+        mapping.setFilters(filters);
+
+        return mapping;
+    }
+
+    // 개별 유저 조회 ver.2
+    @GetMapping("/v2/users/{id}")
+    public MappingJacksonValue oneUser_v2(@PathVariable int id) {
+
+        User user = service.findOne(id);
+
+        if(user == null) {
+            throw new UserNotFoundException(String.format("ID[%s] not found", id)); // Custom 예외 객체 생성
+        }
+
+        // User 객체를 UserV2 객체로 변환
+        // user 객체가 갖고 있던 값을 그대로 user2 객체에 복사하는 방식
+        UserV2 userV2 = new UserV2();
+        BeanUtils.copyProperties(user, userV2);
+        userV2.setGrade("VIP");
+
+        // 필터 생성
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "grade");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("UserInfoV2", filter); // UserV2 엔티티에 명시한 필터명 씀
+
+        // 받아온 유저 정보를 mapping하고 필터 추가함
+        MappingJacksonValue mapping = new MappingJacksonValue(userV2);
         mapping.setFilters(filters);
 
         return mapping;
