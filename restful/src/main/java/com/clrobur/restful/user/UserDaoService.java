@@ -15,9 +15,9 @@ public class UserDaoService {
     
     // 개별 유저를 List에 저장
     static {
-        users.add(new User(1, "First", new Date()));
-        users.add(new User(2, "Second", new Date()));
-        users.add(new User(3, "Third", new Date()));
+        users.add(new User(1, "First", new Date(), "pass1", "701010-1111111"));
+        users.add(new User(2, "Second", new Date(), "pass2", "701010-1111111"));
+        users.add(new User(3, "Third", new Date(), "pass3", "701010-1111111"));
     }
     
     // 저장된 유저의 수
