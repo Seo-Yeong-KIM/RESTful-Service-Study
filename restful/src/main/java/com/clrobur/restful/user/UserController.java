@@ -43,11 +43,11 @@ public class UserController {
         }
 
         // HATEOAS 추가
-        EntityModel<User> resource = new EntityModel<>(user);
+        EntityModel<User> resource = EntityModel.of(user);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).allUsers()); // static으로 import해서 사용하는 메서드 길이 줄임
         resource.add(linkTo.withRel("all-users"));
 
-        return resource; // 값이 null이더라도 응답코드는 200을 받음
+        return resource;
     }
 
     // 유저 정보 저장
