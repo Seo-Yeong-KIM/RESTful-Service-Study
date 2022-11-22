@@ -11,3 +11,10 @@ server:
 spring:
   messages:
     basename: messages
+
+## Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
