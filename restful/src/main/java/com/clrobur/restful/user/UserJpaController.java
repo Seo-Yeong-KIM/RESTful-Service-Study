@@ -21,8 +21,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UserJpaController {
 
+    // 유저 repository
     @Autowired
     private UserRepository userRepository;
+    // 게시글 repository
+    @Autowired
+    private PostRepository postRepository;
+
 
     // 1. 모든 유저 조회
     @GetMapping("/users")
@@ -87,5 +92,27 @@ public class UserJpaController {
         }
 
         return user.get().getPosts();
+    }
+
+    // 6. 게시글 등록
+    @PostMapping("/users/{id}/posts")
+    public ResponseEntity<Post> createPost(@PathVariable Integer id, @RequestBody Post post) { // id는 단일 값으로, post 값은 객체 형태로 받아옴
+
+        // 받아온 id 값이 null 일 수도 있으니 검증함
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()) {
+            throw new UserNotFoundException(String.format("ID[%s] NOT FOUND", id));
+        }
+
+        // id 값으로 user 정보 가져와서 세팅 후 저장
+        post.setUser(user.get());
+        Post savedPost = postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPost.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }
