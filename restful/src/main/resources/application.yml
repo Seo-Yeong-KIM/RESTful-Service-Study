@@ -7,10 +7,13 @@ server:
 #  level:
 #    org.springframework: DEBUG
 
-## 다국어 설정
 spring:
-  messages:
+  messages: ## 다국어 설정
     basename: messages
+  security: ## 스프링 시큐리티 인증 정보 설정
+    user:
+      name: username
+      password: springpass
 
 ## Actuator
 management:
