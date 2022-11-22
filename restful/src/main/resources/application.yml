@@ -14,6 +14,9 @@ spring:
     user:
       name: username
       password: springpass
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
 
 ## Actuator
 management:
@@ -21,3 +24,13 @@ management:
     web:
       exposure:
         include: "*"
+
+## JPA 설정
+jpa:
+  show-sql: true
+
+## H2
+h2:
+  console:
+    enabled: true
+
