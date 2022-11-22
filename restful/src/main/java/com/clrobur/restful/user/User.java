@@ -9,12 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -43,5 +42,14 @@ public class User {
 //    @JsonIgnore
     @ApiModelProperty(notes = "주민번호를 입력하세요")
     private String ssn; // 주민번호
+
+    // User(단수)와 Post(다수)의 관계를 매핑 (1:N)
+    @OneToMany(mappedBy = "user") // 1:N 관계에서 N에 해당하는 필드 값에 붙힘 // user 테이블과 mapping함
+    private List<Post> posts;
+
+
+    // posts를 포함하지 않은 생성자
+    public User(int id, String name, Date joinDate, String password, String ssn) {
+    }
 
 }

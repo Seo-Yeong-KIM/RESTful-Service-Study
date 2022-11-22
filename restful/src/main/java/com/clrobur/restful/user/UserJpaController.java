@@ -24,13 +24,13 @@ public class UserJpaController {
     @Autowired
     private UserRepository userRepository;
 
-    // 모든 유저 조회
+    // 1. 모든 유저 조회
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
         return userRepository.findAll();
     }
 
-    // 개별 유저 조회
+    // 2. 개별 유저 조회
     @GetMapping("/users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
 
@@ -52,13 +52,13 @@ public class UserJpaController {
         return resource;
     }
 
-    // 유저 삭제
+    // 3. 유저 삭제
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id) {
         userRepository.deleteById(id);
     }
 
-    // 유저 등록
+    // 4. 유저 등록
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
 
@@ -73,5 +73,19 @@ public class UserJpaController {
         
         // 수정된 uri값 반환
         return ResponseEntity.created(location).build();
+    }
+
+    // 5. 개별 유저가 등록한 게시글 조회
+    @GetMapping("/users/{id}/posts")
+    public List<Post> retrieveAllPostsByUser(@PathVariable int id) {
+
+        Optional<User> user = userRepository.findById(id);
+
+        // 조회한 id 값이 없는 경우 예외 객체 던짐
+        if (!user.isPresent()) {
+            throw new UserNotFoundException(String.format("ID[%s]'S POSTS NOT FOUND", id));
+        }
+
+        return user.get().getPosts();
     }
 }
